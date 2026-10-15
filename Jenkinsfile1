@@ -1,0 +1,26 @@
+pipeline {
+    agent any
+
+    parameters {
+        string(name: 'BRANCH', defaultValue: 'main', description: 'Git branch to build')
+    }
+
+    environment {
+        IMAGE_NAME = "amazonclone"
+        IMAGE_TAG  = "v1"
+        REPO_URL   = "https://github.com/<your-github-username>/AmazonClone.git"
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: "${params.BRANCH}", url: "${REPO_URL}"
+            }
+        }
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .'
+            }
+        }
+    }
+}
